@@ -1,0 +1,20 @@
+@font-face {
+  font-family: WorkshopManrope;
+  src: url('/fonts/Manrope.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: WorkshopArabic;
+  src: url('/fonts/NotoSansArabic.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: WorkshopDisplay;
+  src: url('/fonts/CormorantGaramond.ttf') format('truetype');
+  font-display: swap;
+}
+:root {
+  --font-manrope: WorkshopManrope;
+  --font-arabic: WorkshopArabic;
+  --font-cormorant: WorkshopDisplay;
+}

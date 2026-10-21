@@ -1,0 +1,86 @@
+{
+  "version": 8,
+  "name": "Saida — Threads of the Sea",
+  "metadata": {
+    "description": "Import into Mapbox Studio and publish to use a studio style URL. Palette mirrors globals.css."
+  },
+  "center": [35.372, 33.562],
+  "zoom": 14,
+  "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+  "sources": {
+    "streets": { "type": "vector", "url": "mapbox://mapbox.mapbox-streets-v8" }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": { "background-color": "#f7f5ef" }
+    },
+    {
+      "id": "landuse",
+      "type": "fill",
+      "source": "streets",
+      "source-layer": "landuse",
+      "paint": { "fill-color": "#e7ece6" }
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "streets",
+      "source-layer": "water",
+      "paint": { "fill-color": "#245a63" }
+    },
+    {
+      "id": "buildings",
+      "type": "fill",
+      "source": "streets",
+      "source-layer": "building",
+      "minzoom": 13,
+      "paint": { "fill-color": "#e8deca", "fill-outline-color": "#cbd0c9" }
+    },
+    {
+      "id": "roads",
+      "type": "line",
+      "source": "streets",
+      "source-layer": "road",
+      "paint": {
+        "line-color": "#ffffff",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1, 16, 7]
+      }
+    },
+    {
+      "id": "road-labels",
+      "type": "symbol",
+      "source": "streets",
+      "source-layer": "road",
+      "minzoom": 14,
+      "layout": {
+        "symbol-placement": "line",
+        "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]],
+        "text-font": ["DIN Pro Regular"],
+        "text-size": 11
+      },
+      "paint": {
+        "text-color": "#173c43",
+        "text-halo-color": "#f7f5ef",
+        "text-halo-width": 1
+      }
+    },
+    {
+      "id": "places",
+      "type": "symbol",
+      "source": "streets",
+      "source-layer": "place_label",
+      "layout": {
+        "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]],
+        "text-font": ["DIN Pro Medium"],
+        "text-size": 14
+      },
+      "paint": {
+        "text-color": "#173c43",
+        "text-halo-color": "#f7f5ef",
+        "text-halo-width": 1.5
+      }
+    }
+  ]
+}

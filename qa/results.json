@@ -1,0 +1,27 @@
+{
+  "verifiedAt": "2026-10-19T08:58:28.708Z",
+  "playwright": {
+    "startTime": "2026-10-19T08:58:28.708Z",
+    "duration": 136262.852,
+    "expected": 136,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "pageScreenshots": 96,
+  "bookingScreenshots": 4,
+  "widths": [360, 768, 1280, 1440],
+  "locales": ["en", "ar"],
+  "lighthouse": {
+    "en": {
+      "accessibility": 100,
+      "bestPractices": 100
+    },
+    "ar": {
+      "accessibility": 100,
+      "bestPractices": 100
+    }
+  },
+  "productionDependencyVulnerabilities": 0,
+  "followUp": "Four booking/dialog tests re-passed after the final date-picker target-size adjustment."
+}

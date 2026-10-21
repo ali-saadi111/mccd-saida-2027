@@ -1,0 +1,62 @@
+{
+  "name": "mccd-saida-2027",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1",
+    "lint": "eslint .",
+    "typecheck": "node node_modules/@typescript/native/bin/tsc --noEmit",
+    "format": "prettier --write .",
+    "test": "playwright test",
+    "test:visual": "playwright test tests/visual.spec.ts",
+    "storybook": "storybook dev -p 6006 --no-open",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "6.0.0",
+    "@internationalized/date": "3.12.4",
+    "@phosphor-icons/react": "2.1.10",
+    "clsx": "2.1.1",
+    "date-fns": "4.4.0",
+    "mapbox-gl": "3.33.0",
+    "motion": "14.3.1",
+    "next": "16.4.2",
+    "next-intl": "4.14.9",
+    "react": "19.3.1",
+    "react-aria": "3.53.1",
+    "react-aria-components": "1.22.1",
+    "react-dom": "19.3.1",
+    "react-hook-form": "7.90.0",
+    "tailwind-merge": "3.7.0",
+    "tailwind-variants": "3.3.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@axe-core/react": "4.14.0",
+    "@eslint/compat": "2.1.1",
+    "@playwright/test": "1.64.1",
+    "@storybook/addon-a11y": "10.6.2",
+    "@storybook/addon-docs": "10.6.2",
+    "@storybook/nextjs-vite": "10.6.2",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "26.6.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@typescript/native": "npm:typescript@7.0.2",
+    "eslint": "10.13.0",
+    "eslint-config-next": "16.4.2",
+    "prettier": "3.9.10",
+    "prettier-plugin-tailwindcss": "0.8.1",
+    "storybook": "10.6.2",
+    "tailwindcss": "4.3.3",
+    "tailwindcss-react-aria-components": "2.2.0",
+    "typescript": "npm:@typescript/typescript6@6.0.2",
+    "vite": "8.3.4"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}
