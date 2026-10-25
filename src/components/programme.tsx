@@ -41,7 +41,6 @@ import { venues } from '@/lib/data/mock';
 import { venuePhoto } from '@/lib/photos';
 import {
   categories,
-  audiences,
   localised,
   type Event,
   type EventFilters,
@@ -98,10 +97,6 @@ export function Programme() {
     filters.category && {
       key: 'category',
       label: t('categories.' + filters.category),
-    },
-    filters.audience && {
-      key: 'audience',
-      label: t('audiences.' + filters.audience),
     },
     filters.date && { key: 'date', label: dateLabel(filters.date, l) },
     filters.freeOnly && { key: 'freeOnly', label: t('events.freeOnly') },
@@ -266,18 +261,6 @@ export function Programme() {
                   ...months.map((id) => ({ id, label: monthLabel(id) })),
                 ]}
               />
-              <SelectField
-                label={t('common.audience')}
-                value={filters.audience || ''}
-                onChange={(v) => update('audience', v)}
-                options={[
-                  { id: '', label: t('events.allAudiences') },
-                  ...audiences.map((id) => ({
-                    id,
-                    label: t('audiences.' + id),
-                  })),
-                ]}
-              />
               <DateFilter
                 value={filters.date || ''}
                 onChange={(v) => update('date', v)}
@@ -376,7 +359,6 @@ export function Programme() {
                       setSelectedDay('');
                     }}
                     eventDates={results.map((e) => dateKey(e.starts_at))}
-                    defaultView="month"
                     footer={
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <p className="text-sm text-white/75">

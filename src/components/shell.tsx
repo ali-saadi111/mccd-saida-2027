@@ -84,17 +84,6 @@ export function Header() {
       <AppLink href="#main" className="skip-link">
         {t('nav.skip')}
       </AppLink>
-      <div className="preview-banner">
-        <div className="preview-inner container">
-          <span>{t('site.sample')}</span>
-          <div className="utility-links">
-            <AppLink href={'/' + l + '/accessibility'} className="utility-link">
-              {t('nav.accessibility')}
-            </AppLink>
-            <LanguageSwitch />
-          </div>
-        </div>
-      </div>
       <header
         className="site-header"
         data-scrolled={scrolled || undefined}
@@ -107,6 +96,7 @@ export function Header() {
               {nav}
             </nav>
             <div className="header-actions">
+              <LanguageSwitch className="language-switch header-language" />
               <ButtonLink
                 href={'/' + l + '/submit'}
                 size="sm"

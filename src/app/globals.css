@@ -139,6 +139,11 @@
     outline: 2px solid var(--color-rust);
     outline-offset: 3px;
   }
+  /* React Aria also flags these wrappers; the control inside shows the ring. */
+  .field[data-focus-visible],
+  .react-aria-Tabs[data-focus-visible] {
+    outline: none;
+  }
   main:focus {
     outline: none;
   }
@@ -197,48 +202,8 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
-/* Soft edges on the glass calendar's scrolling day strip. */
-.glass-strip {
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 calc(var(--spacing) * 6),
-    #000 calc(100% - var(--spacing) * 6),
-    transparent
-  );
-}
 
 /* ---------- Header (floating bar, after 21st.dev efferd/floating-header) ---------- */
-.preview-banner {
-  background: var(--color-deep);
-  color: rgb(247 244 238 / 0.82);
-  font-size: var(--text-tiny);
-}
-.preview-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: calc(var(--spacing) * 6);
-  min-height: calc(var(--spacing) * 9);
-}
-.utility-links {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--spacing) * 6);
-}
-.utility-link,
-.preview-banner .language-switch {
-  min-height: calc(var(--spacing) * 9);
-  display: inline-flex;
-  align-items: center;
-  font-size: var(--text-tiny);
-  color: var(--color-paper);
-}
-.utility-link[data-hovered],
-.preview-banner .language-switch[data-hovered] {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
 .site-header {
   position: sticky;
   top: calc(var(--spacing) * 3);
@@ -349,6 +314,23 @@
 .language-switch svg {
   width: calc(var(--spacing) * 4);
   height: calc(var(--spacing) * 4);
+}
+.header-language {
+  gap: calc(var(--spacing) * 1.5);
+  min-height: calc(var(--spacing) * 10);
+  padding-inline: calc(var(--spacing) * 3.5);
+  border: 1px solid rgb(20 41 45 / 0.12);
+  border-radius: var(--radius-pill);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgb(20 41 45 / 0.78);
+  transition:
+    background 160ms,
+    color 160ms;
+}
+.header-language[data-hovered] {
+  background: rgb(20 41 45 / 0.05);
+  color: var(--color-ink);
 }
 .skip-link {
   position: fixed;
@@ -956,9 +938,25 @@
   max-width: calc(var(--spacing) * 120);
   color: rgb(247 244 238 / 0.82);
 }
+.plan-day {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+  max-width: calc(var(--spacing) * 150);
+  margin-top: calc(var(--spacing) * 9);
+  font-size: 0.875rem;
+  color: rgb(247 244 238 / 0.72);
+}
+.plan-day strong {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-paper);
+}
 .plan-list {
   list-style: none;
-  margin: calc(var(--spacing) * 9) 0 calc(var(--spacing) * 6);
+  margin: calc(var(--spacing) * 3) 0 calc(var(--spacing) * 6);
   padding: 0;
   border-top: 1px solid rgb(255 255 255 / 0.2);
   max-width: calc(var(--spacing) * 150);
@@ -973,8 +971,9 @@
 }
 .plan-time {
   font-size: 0.875rem;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: rgb(247 244 238 / 0.72);
+  color: var(--color-sand);
 }
 .plan-title {
   font-family: var(--font-display);
@@ -997,7 +996,7 @@
   color: rgb(247 244 238 / 0.7);
 }
 .plan-empty {
-  margin-block: calc(var(--spacing) * 9) calc(var(--spacing) * 6);
+  margin-block: calc(var(--spacing) * 3) calc(var(--spacing) * 6);
   color: rgb(247 244 238 / 0.75);
 }
 .glass-calendar-title {
@@ -1941,6 +1940,21 @@
 .select-trigger svg {
   width: calc(var(--spacing) * 4);
   flex-shrink: 0;
+  color: var(--color-muted);
+  transition: transform 160ms;
+}
+.select-trigger[aria-expanded='true'] > svg {
+  transform: rotate(180deg);
+}
+/* SelectValue renders the chosen option's content; keep only its text. */
+.select-trigger .react-aria-SelectValue {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.select-trigger .selection-check {
+  display: none;
 }
 .popover {
   background: var(--color-white);
@@ -1953,7 +1967,15 @@
   overflow: auto;
 }
 .listbox {
-  padding: calc(var(--spacing) * 1);
+  display: grid;
+  gap: 2px;
+  padding: calc(var(--spacing) * 1.5);
+  outline: none;
+}
+.popover:has(.listbox) {
+  box-shadow:
+    0 1px 2px rgb(20 41 45 / 0.06),
+    0 18px 40px -12px rgb(20 41 45 / 0.28);
 }
 .popover:has(.calendar) {
   width: min(calc(var(--spacing) * 100), calc(100vw - var(--spacing) * 2));
@@ -1972,13 +1994,19 @@
   border-radius: calc(var(--radius-control) - 4px);
   cursor: pointer;
 }
-.option[data-focused],
-.option[data-selected] {
+.option[data-focused] {
   background: var(--color-mist);
   outline: none;
 }
+.option[data-selected] {
+  color: var(--color-sea);
+  font-weight: 600;
+}
 .selection-check {
   visibility: hidden;
+  flex-shrink: 0;
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
 }
 .option[data-selected] .selection-check {
   visibility: visible;
@@ -2328,15 +2356,64 @@
 }
 .dock-fields {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  grid-template-columns: repeat(2, minmax(0, 15rem)) auto;
+  justify-content: start;
   align-items: end;
-  gap: calc(var(--spacing) * 4);
+  gap: calc(var(--spacing) * 3);
   padding: calc(var(--spacing) * 4) calc(var(--spacing) * 3)
     calc(var(--spacing) * 2);
   border-top: 1px solid var(--color-mist);
 }
 .dock-fields .field {
+  gap: calc(var(--spacing) * 1.5);
   color: var(--color-ink);
+}
+/* Compact controls, in scale with the event type chips above. */
+.dock-fields .input {
+  height: calc(var(--spacing) * 10);
+  min-height: calc(var(--spacing) * 10);
+  padding-inline: calc(var(--spacing) * 3);
+  font-size: 0.875rem;
+}
+.dock-fields .input .button-icon {
+  width: calc(var(--spacing) * 8);
+  height: calc(var(--spacing) * 8);
+  min-height: calc(var(--spacing) * 8);
+  margin-inline-end: calc(var(--spacing) * -1.5);
+}
+.dock-fields .input .button-icon svg {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+}
+.dock-fields .field > .react-aria-Label,
+.dock-fields .field > .group-label {
+  color: var(--color-muted);
+}
+/* Free entry: a toggle the same height as the fields beside it. */
+.dock-fields .check-field {
+  height: calc(var(--spacing) * 10);
+  min-height: 0;
+  padding-inline: calc(var(--spacing) * 3.5);
+  border: 1px solid rgb(20 41 45 / 0.16);
+  border-radius: var(--radius-control);
+  background: var(--color-white);
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background 160ms,
+    border-color 160ms;
+}
+.dock-fields .check-field[data-hovered] {
+  border-color: rgb(20 41 45 / 0.28);
+}
+.dock-fields .check-field[data-selected] {
+  border-color: var(--color-sea);
+  background: rgb(29 75 83 / 0.06);
+  color: var(--color-sea);
+}
+.dock-fields .check-field[data-focus-visible] {
+  outline: 2px solid var(--color-sea);
+  outline-offset: 2px;
 }
 
 /* Category chips: adapted 21st.dev Chip Group */
@@ -2808,6 +2885,10 @@
   .dock-fields {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .dock-fields .check-field {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
   .agenda-layout {
     grid-template-columns: minmax(0, 1fr);
     gap: calc(var(--spacing) * 6);
@@ -2903,9 +2984,15 @@
     padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2)
       calc(var(--spacing) * 2);
   }
-  /* React Aria inserts hidden nodes here, so match the selects rather than count children. */
-  .dock-fields > :not(:has(.select-trigger)) {
-    grid-column: 1 / -1;
+  .dock-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dock-fields .input,
+  .dock-fields .check-field {
+    height: var(--spacing-touch);
+  }
+  .dock-fields .check-field {
+    justify-self: stretch;
   }
   .result-toolbar {
     flex-direction: column;
@@ -4327,60 +4414,101 @@ button.journey-step:hover .journey-label {
 }
 
 /* Partners */
-.partner-bento {
+.partner-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: calc(var(--spacing) * 5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.partner-tile {
+.partner-card {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--spacing) * 4);
-  padding: calc(var(--spacing) * 8);
+  padding: calc(var(--spacing) * 3);
+  padding-bottom: calc(var(--spacing) * 7);
   background: var(--color-white);
   border: 1px solid rgb(20 41 45 / 0.08);
   border-radius: var(--radius-card);
+  transition:
+    border-color 200ms,
+    box-shadow 200ms;
 }
-.partner-tile-wide {
-  grid-column: span 2;
+.partner-card:hover {
+  border-color: rgb(20 41 45 / 0.16);
+  box-shadow: 0 18px 40px -28px rgb(20 41 45 / 0.45);
 }
-.partner-tile h3 {
+.partner-stage {
+  display: grid;
+  place-items: center;
+  height: calc(var(--spacing) * 36);
+  margin-bottom: calc(var(--spacing) * 6);
+  padding: calc(var(--spacing) * 6);
+  background: var(--color-paper);
+  border-radius: calc(var(--radius-card) - var(--spacing) * 2);
+}
+.partner-card > :not(.partner-stage) {
+  margin-inline: calc(var(--spacing) * 4);
+}
+.partner-role {
+  font-size: var(--text-tiny);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-rust);
+}
+.partner-card h3 {
+  margin-top: calc(var(--spacing) * 2);
   font-family: var(--font-sans);
   font-size: 1.0625rem;
   font-weight: 600;
   line-height: 1.4;
 }
-.partner-logos {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: calc(var(--spacing) * 8);
-  margin-top: auto;
-}
-.partner-logos > div {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 4);
-  padding-top: calc(var(--spacing) * 5);
-  border-top: 1px solid var(--color-mist);
+.partner-card .muted {
+  margin-top: calc(var(--spacing) * 2);
+  font-size: 0.9375rem;
+  line-height: 1.6;
 }
 .partner-logo {
-  height: calc(var(--spacing) * 14);
+  max-height: calc(var(--spacing) * 16);
   width: auto;
   max-width: 100%;
   object-fit: contain;
-  object-position: left;
-}
-[dir='rtl'] .partner-logo {
-  object-position: right;
 }
 .partner-crest {
-  width: calc(var(--spacing) * 20);
-  height: calc(var(--spacing) * 20);
-  margin-top: auto;
+  width: calc(var(--spacing) * 22);
+  height: calc(var(--spacing) * 22);
+  object-fit: contain;
   mix-blend-mode: multiply;
 }
-.about-partners .notice {
-  margin-top: calc(var(--spacing) * 8);
+.partner-stage-city {
+  align-content: center;
+  gap: calc(var(--spacing) * 1);
+  text-align: center;
+  color: var(--color-sea);
+}
+.partner-stage-city span {
+  font-family: var(--font-display);
+  font-size: 2.75rem;
+  font-style: italic;
+  line-height: 1;
+}
+.partner-stage-city small {
+  font-size: var(--text-tiny);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+[dir='rtl'] .partner-stage-city span {
+  font-family: var(--font-local);
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 600;
+}
+[dir='rtl'] .partner-role,
+[dir='rtl'] .partner-stage-city small {
+  letter-spacing: 0;
 }
 
 /* Photography credits */
@@ -4722,11 +4850,8 @@ button.journey-step:hover .journey-label {
     border-radius: var(--radius-card);
     background: var(--color-mist);
   }
-  .partner-bento {
+  .partner-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .partner-tile-wide {
-    grid-column: 1 / -1;
   }
   .contact-layout {
     grid-template-columns: minmax(0, 1fr);
@@ -4781,11 +4906,11 @@ button.journey-step:hover .journey-label {
     width: calc(var(--spacing) * 16);
     height: calc(var(--spacing) * 10);
   }
-  .partner-bento {
+  .partner-grid {
     grid-template-columns: minmax(0, 1fr);
   }
-  .partner-tile {
-    padding: calc(var(--spacing) * 6);
+  .partner-stage {
+    height: calc(var(--spacing) * 30);
   }
   .about-credits-head {
     flex-direction: column;
@@ -5097,10 +5222,7 @@ button.journey-step:hover .journey-label {
   :root {
     --header-height: 3.5rem;
   }
-  .preview-inner > span {
-    font-size: 0.6875rem;
-  }
-  .preview-banner .utility-link {
+  .header-language {
     display: none;
   }
   .header-inner {
@@ -5341,5 +5463,212 @@ button.journey-step:hover .journey-label {
   .alternative {
     flex-direction: column;
     align-items: start;
+  }
+}
+
+/* ---------- Small screens: hero, rails and reading order ---------- */
+.hero-scroll {
+  display: none;
+}
+@media (max-width: 860px) {
+  /* The calendar comes before the day it filters, so a tapped date shows its events below. */
+  .plan-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  .plan-copy {
+    display: contents;
+  }
+  .plan-inner > :last-child {
+    order: 1;
+    width: 100%;
+    max-width: 26rem;
+    margin-top: calc(var(--spacing) * 8);
+  }
+  .plan-results {
+    order: 2;
+  }
+  .plan-link {
+    order: 3;
+    align-self: start;
+  }
+}
+@media (max-width: 767px) {
+  .home-hero {
+    min-height: max(32rem, calc(100svh - var(--spacing) * 6));
+  }
+  .hero-bg {
+    object-position: 50% 60%;
+  }
+  .hero-shade,
+  [dir='rtl'] .hero-shade {
+    background: linear-gradient(
+      to top,
+      rgb(var(--shade) / 0.94) 0%,
+      rgb(var(--shade) / 0.72) 34%,
+      rgb(var(--shade) / 0.12) 64%,
+      rgb(var(--shade) / 0.4) 100%
+    );
+  }
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    padding-block: calc(var(--header-height) + var(--spacing) * 10)
+      calc(var(--spacing) * 5);
+  }
+  .hero-content .eyebrow {
+    align-self: start;
+    padding: calc(var(--spacing) * 1) calc(var(--spacing) * 3);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: var(--radius-pill);
+    background: rgb(255 255 255 / 0.1);
+    backdrop-filter: blur(8px);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+  }
+  [dir='rtl'] .hero-content .eyebrow {
+    letter-spacing: 0;
+  }
+  .home-hero h1 {
+    font-size: clamp(2.875rem, 13.5vw, 4.25rem);
+    margin-block: calc(var(--spacing) * 4);
+  }
+  [dir='rtl'] .home-hero h1 {
+    font-size: clamp(2.5rem, 12vw, 3.5rem);
+  }
+  .hero-subtitle {
+    max-width: 30ch;
+  }
+  .hero-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13.5rem, 1fr));
+    gap: calc(var(--spacing) * 2.5);
+    margin-top: calc(var(--spacing) * 7);
+  }
+  .hero-actions .button {
+    min-height: calc(var(--spacing) * 12);
+  }
+  .hero-scroll {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--spacing) * 4);
+    min-height: var(--spacing-touch);
+    margin-top: calc(var(--spacing) * 6);
+    padding-top: calc(var(--spacing) * 3);
+    border-top: 1px solid rgb(255 255 255 / 0.18);
+    font-size: var(--text-label);
+    line-height: 1.4;
+    color: rgb(247 244 238 / 0.72);
+  }
+  .hero-scroll svg {
+    flex-shrink: 0;
+    width: calc(var(--spacing) * 5);
+    height: calc(var(--spacing) * 5);
+    animation: hero-nudge 2.4s var(--ease-gentle) infinite;
+  }
+  .fact {
+    padding-block: calc(var(--spacing) * 6);
+  }
+  .fact strong {
+    font-size: 2.375rem;
+  }
+  .fact span {
+    margin-top: calc(var(--spacing) * 2);
+  }
+  .home-intro {
+    padding-block: calc(var(--spacing) * 12);
+  }
+  /* Card rows become swipeable rails with a peek of the next card. */
+  .event-cards.rail,
+  .news-grid.rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-auto-columns: min(82%, 20rem);
+    gap: calc(var(--spacing) * 4);
+    margin-inline: calc(var(--spacing-page) * -1);
+    padding: 0 var(--spacing-page) calc(var(--spacing) * 2);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--spacing-page);
+    scrollbar-width: none;
+  }
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+  .rail > * {
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+  .rail .event-card h3,
+  .rail .news-card h3 {
+    font-size: 1.5rem;
+  }
+  /* Strands read as a compact list: thumbnail beside the text. */
+  .strands {
+    gap: 0;
+    margin-top: calc(var(--spacing) * 8);
+  }
+  .strand {
+    display: grid;
+    grid-template-columns: calc(var(--spacing) * 26) minmax(0, 1fr);
+    column-gap: calc(var(--spacing) * 4);
+    align-items: start;
+    padding-block: calc(var(--spacing) * 5);
+    border-top: 1px solid var(--color-line);
+  }
+  .strand:last-child {
+    border-bottom: 1px solid var(--color-line);
+  }
+  .strand-media {
+    grid-row: 1 / span 3;
+    aspect-ratio: 1;
+    margin: 0;
+  }
+  .strand > :not(.strand-media) {
+    grid-column: 2;
+  }
+  .strand h3 {
+    margin-block: calc(var(--spacing) * 1) calc(var(--spacing) * 1.5);
+    font-size: 1.375rem;
+  }
+  .strand p {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+  .cities-pair div + div {
+    padding-inline-start: calc(var(--spacing) * 4);
+  }
+}
+/* Tablets keep the full nav in the bar, so the tagline gives way; small phones need the room too. */
+@media (min-width: 768px) and (max-width: 1100px) {
+  .brand small {
+    display: none;
+  }
+}
+@media (max-width: 479px) {
+  .brand small {
+    display: none;
+  }
+  .brand strong {
+    font-size: 1rem;
+  }
+}
+@keyframes hero-nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll svg {
+    animation: none;
   }
 }

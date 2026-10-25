@@ -21,29 +21,27 @@ interface Day {
   date: Date;
   isToday: boolean;
   isSelected: boolean;
-  isMarked: boolean;
+  /** Number of events on this day; 0 for a quiet day. */
+  count: number;
 }
 
-type View = 'days' | 'month';
-
 export interface GlassCalendarLabels {
-  days: string;
-  month: string;
-  view: string;
   previousMonth: string;
   nextMonth: string;
   today: string;
-  hasEvents: string;
+  legendEvents: string;
+  legendSelected: string;
+  /** Count of events, e.g. "2 events"; used in labels and the month total. */
+  eventCount: (count: number) => string;
 }
 
 const defaultLabels: GlassCalendarLabels = {
-  days: 'Days',
-  month: 'Month',
-  view: 'Calendar view',
   previousMonth: 'Previous month',
   nextMonth: 'Next month',
   today: 'Today',
-  hasEvents: 'has events',
+  legendEvents: 'Days with events',
+  legendSelected: 'Selected day',
+  eventCount: (n) => (n === 1 ? '1 event' : n + ' events'),
 };
 
 export interface GlassCalendarProps extends Omit<
@@ -56,18 +54,23 @@ export interface GlassCalendarProps extends Omit<
   /** Visible month (any date inside it). Uncontrolled when omitted. */
   month?: Date;
   onMonthChange?: (month: Date) => void;
-  /** Days that carry a marker dot, e.g. days with events. */
+  /**
+   * One entry per event, e.g. each event's start day. Repeated days are
+   * counted and shown as a badge on that day.
+   */
   markedDates?: Date[];
   minMonth?: Date;
   maxMonth?: Date;
   /** BCP 47 locale for month, weekday and digit formatting. */
   locale?: string;
-  defaultView?: View;
   labels?: Partial<GlassCalendarLabels>;
   /** Content below the divider, e.g. a summary of the selected day. */
   footer?: React.ReactNode;
   className?: string;
 }
+
+const dayKey = (d: Date) =>
+  d.getFullYear() * 400 + d.getMonth() * 32 + d.getDate();
 
 // --- MAIN COMPONENT ---
 export const GlassCalendar = React.forwardRef<
@@ -85,7 +88,6 @@ export const GlassCalendar = React.forwardRef<
       minMonth,
       maxMonth,
       locale = 'en-GB',
-      defaultView = 'days',
       labels: propLabels,
       footer,
       ...props
@@ -99,18 +101,15 @@ export const GlassCalendar = React.forwardRef<
     const [innerSelected, setInnerSelected] = React.useState<Date | null>(() =>
       propSelectedDate === undefined ? new Date() : propSelectedDate,
     );
-    const [view, setView] = React.useState<View>(defaultView);
     const currentMonth = propMonth || innerMonth;
     const selectedDate =
       propSelectedDate === undefined ? innerSelected : propSelectedDate;
-    const strip = React.useRef<HTMLDivElement>(null);
     const headingId = React.useId();
 
     const fmt = React.useMemo(
       () => ({
         month: new Intl.DateTimeFormat(locale, { month: 'long' }),
         year: new Intl.DateTimeFormat(locale, { year: 'numeric' }),
-        weekday: new Intl.DateTimeFormat(locale, { weekday: 'narrow' }),
         weekdayShort: new Intl.DateTimeFormat(locale, { weekday: 'short' }),
         full: new Intl.DateTimeFormat(locale, {
           weekday: 'long',
@@ -123,6 +122,14 @@ export const GlassCalendar = React.forwardRef<
       [locale],
     );
 
+    // Events per day
+    const counts = React.useMemo(() => {
+      const map = new Map<number, number>();
+      for (const d of markedDates)
+        map.set(dayKey(d), (map.get(dayKey(d)) || 0) + 1);
+      return map;
+    }, [markedDates]);
+
     // Generate all days for the current month
     const monthDays = React.useMemo(() => {
       const start = startOfMonth(currentMonth);
@@ -134,11 +141,12 @@ export const GlassCalendar = React.forwardRef<
           date,
           isToday: isToday(date),
           isSelected: !!selectedDate && isSameDay(date, selectedDate),
-          isMarked: markedDates.some((d) => isSameDay(d, date)),
+          count: counts.get(dayKey(date)) || 0,
         });
       }
       return days;
-    }, [currentMonth, selectedDate, markedDates]);
+    }, [currentMonth, selectedDate, counts]);
+    const monthTotal = monthDays.reduce((sum, d) => sum + d.count, 0);
 
     const canGoBack =
       !minMonth || isAfter(startOfMonth(currentMonth), startOfMonth(minMonth));
@@ -163,55 +171,43 @@ export const GlassCalendar = React.forwardRef<
       if (canGoForward) changeMonth(addMonths(currentMonth, 1));
     };
 
-    // Keep the selected (or first marked) day in view in the scrolling strip.
-    // scrollBy is relative, so it behaves the same in LTR and RTL.
-    React.useEffect(() => {
-      if (view !== 'days' || !strip.current) return;
-      const target =
-        strip.current.querySelector<HTMLElement>('[aria-pressed="true"]') ||
-        strip.current.querySelector<HTMLElement>('[data-marked]');
-      if (!target) return;
-      const box = strip.current.getBoundingClientRect();
-      const item = target.getBoundingClientRect();
-      strip.current.scrollBy({
-        left: item.left + item.width / 2 - (box.left + box.width / 2),
-        behavior: 'instant',
-      });
-    }, [view, currentMonth, selectedDate]);
-
-    const dayButton = (day: Day, size: 'strip' | 'grid') => (
+    const dayButton = (day: Day) => (
       <button
         type="button"
         onClick={() => handleDateClick(day.date)}
         aria-pressed={day.isSelected}
-        data-marked={day.isMarked || undefined}
+        data-marked={day.count > 0 || undefined}
         aria-label={[
           fmt.full.format(day.date),
           day.isToday ? labels.today : '',
-          day.isMarked ? labels.hasEvents : '',
+          day.count ? labels.eventCount(day.count) : '',
         ]
           .filter(Boolean)
           .join(', ')}
         className={cn(
-          'relative flex items-center justify-center rounded-full text-sm font-semibold tabular-nums transition-colors duration-200',
+          'relative flex aspect-square w-full max-w-12 items-center justify-center rounded-xl text-sm tabular-nums transition-colors duration-200',
           'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white',
-          size === 'strip' ? 'h-11 w-11' : 'aspect-square w-full max-w-11',
           {
-            'bg-paper text-ink shadow-lg': day.isSelected,
-            'text-white hover:bg-white/15': !day.isSelected,
-            'ring-1 ring-white/45 ring-inset': day.isToday && !day.isSelected,
+            'bg-paper font-bold text-ink shadow-lg': day.isSelected,
+            'bg-sand/35 font-bold text-white ring-2 ring-sand ring-inset hover:bg-sand/50':
+              !day.isSelected && day.count > 0,
+            'font-medium text-white/55 hover:bg-white/10 hover:text-white':
+              !day.isSelected && !day.count,
+            'underline decoration-2 underline-offset-4': day.isToday,
           },
         )}
       >
         {fmt.day.format(getDate(day.date))}
-        {day.isMarked && (
+        {day.count > 0 && (
           <span
             aria-hidden
             className={cn(
-              'absolute bottom-1.5 h-1 w-1 rounded-full',
-              day.isSelected ? 'bg-rust' : 'bg-sand',
+              'absolute -end-1 -top-1 flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full px-1 text-[0.625rem] leading-none font-bold',
+              day.isSelected ? 'bg-rust text-paper' : 'bg-sand text-ink',
             )}
-          />
+          >
+            {fmt.day.format(day.count)}
+          </span>
         )}
       </button>
     );
@@ -233,32 +229,24 @@ export const GlassCalendar = React.forwardRef<
         )}
         {...props}
       >
-        {/* Header: view toggle */}
-        <div className="flex items-center justify-between gap-4">
-          <div
-            role="group"
-            aria-label={labels.view}
-            className="flex items-center gap-1 rounded-full bg-white/10 p-1"
+        {/* Header: month title and navigation */}
+        <div className="mb-5 flex items-start justify-between gap-4">
+          <motion.h2
+            id={headingId}
+            key={currentMonth.getFullYear() * 12 + currentMonth.getMonth()}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            aria-live="polite"
+            className="glass-calendar-title flex flex-col gap-2 text-white"
           >
-            {(['days', 'month'] as const).map((v) => (
-              <button
-                key={v}
-                type="button"
-                aria-pressed={view === v}
-                onClick={() => setView(v)}
-                className={cn(
-                  'min-h-9 rounded-full px-4 text-xs font-semibold transition-colors',
-                  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white',
-                  view === v
-                    ? 'bg-paper text-ink'
-                    : 'text-white/75 hover:text-white',
-                )}
-              >
-                {labels[v]}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-1">
+            <span>{fmt.month.format(currentMonth)}</span>{' '}
+            <span className="font-sans text-sm font-medium tracking-wide text-white/60">
+              {fmt.year.format(currentMonth)}
+              {monthTotal > 0 && ' · ' + labels.eventCount(monthTotal)}
+            </span>
+          </motion.h2>
+          <div className="flex shrink-0 items-center gap-1">
             <button
               type="button"
               onClick={handlePrevMonth}
@@ -280,75 +268,47 @@ export const GlassCalendar = React.forwardRef<
           </div>
         </div>
 
-        {/* Month display */}
-        <motion.h2
-          id={headingId}
-          key={currentMonth.getFullYear() * 12 + currentMonth.getMonth()}
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          aria-live="polite"
-          className="glass-calendar-title my-6 flex items-baseline gap-3 text-white"
-        >
-          <span>{fmt.month.format(currentMonth)}</span>{' '}
-          <span className="font-sans text-sm font-medium tracking-wide text-white/60">
-            {fmt.year.format(currentMonth)}
-          </span>
-        </motion.h2>
-
-        {view === 'days' ? (
-          /* Scrollable day strip */
+        {/* Month grid */}
+        <div role="group" aria-labelledby={headingId}>
           <div
-            ref={strip}
-            role="group"
-            aria-labelledby={headingId}
-            className="scrollbar-hide glass-strip -mx-6 overflow-x-auto px-6 py-1"
+            aria-hidden
+            className="mb-2 grid grid-cols-7 text-center text-[0.6875rem] font-semibold text-white/55"
           >
-            <div className="flex gap-2">
-              {monthDays.map((day) => (
-                <div
-                  key={day.date.getDate()}
-                  className="flex flex-shrink-0 flex-col items-center gap-2"
-                >
-                  <span
-                    aria-hidden
-                    className="text-[0.6875rem] font-semibold text-white/55"
-                  >
-                    {fmt.weekday.format(day.date)}
-                  </span>
-                  {dayButton(day, 'strip')}
-                </div>
-              ))}
-            </div>
+            {weekdayHeads.map((d) => (
+              <span key={d}>{d}</span>
+            ))}
           </div>
-        ) : (
-          /* Month grid */
-          <div role="group" aria-labelledby={headingId}>
-            <div
-              aria-hidden
-              className="mb-2 grid grid-cols-7 text-center text-[0.6875rem] font-semibold text-white/55"
-            >
-              {weekdayHeads.map((d) => (
-                <span key={d}>{d}</span>
-              ))}
-            </div>
-            <div className="grid grid-cols-7 justify-items-center gap-y-1">
-              {Array.from({ length: leading }, (_, i) => (
-                <span key={'blank' + i} aria-hidden />
-              ))}
-              {monthDays.map((day) => (
-                <React.Fragment key={day.date.getDate()}>
-                  {dayButton(day, 'grid')}
-                </React.Fragment>
-              ))}
-            </div>
+          <div className="grid grid-cols-7 justify-items-center gap-1.5">
+            {Array.from({ length: leading }, (_, i) => (
+              <span key={'blank' + i} aria-hidden />
+            ))}
+            {monthDays.map((day) => (
+              <React.Fragment key={day.date.getDate()}>
+                {dayButton(day)}
+              </React.Fragment>
+            ))}
           </div>
-        )}
+        </div>
+
+        {/* Legend */}
+        <ul
+          aria-hidden
+          className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/75"
+        >
+          <li className="flex items-center gap-2">
+            <span className="h-3.5 w-3.5 rounded bg-sand/35 ring-2 ring-sand ring-inset" />
+            {labels.legendEvents}
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="h-3.5 w-3.5 rounded bg-paper" />
+            {labels.legendSelected}
+          </li>
+        </ul>
 
         {footer && (
           <>
             {/* Divider */}
-            <div className="mt-6 h-px bg-white/20" />
+            <div className="mt-5 h-px bg-white/20" />
             {/* Footer */}
             <div className="mt-4">{footer}</div>
           </>

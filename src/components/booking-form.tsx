@@ -681,7 +681,6 @@ export function BookingForm() {
                     <AppLink href={'/' + l + '/privacy'} target="_blank">
                       {t('booking.privacy')}
                     </AppLink>
-                    <p className="notice">{t('site.demo')}</p>
                     <div className="border-t border-line pt-4">
                       <CheckField isSelected={simulate} onChange={setSimulate}>
                         {t('booking.simulate')}

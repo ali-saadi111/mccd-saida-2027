@@ -21,11 +21,18 @@ import { publishedNews } from '@/lib/data';
 import { localised, type NewsPost } from '@/lib/data/types';
 import { dateLabel, numberLabel } from '@/lib/dates';
 import { newsPhoto } from '@/lib/photos';
-export function NewsGrid({ posts }: { posts: NewsPost[] }) {
+import { cn } from '@/lib/utils';
+export function NewsGrid({
+  posts,
+  className,
+}: {
+  posts: NewsPost[];
+  className?: string;
+}) {
   const t = useTranslations();
   const l = useLocale();
   return (
-    <div className="news-grid">
+    <div className={cn('news-grid', className)}>
       {posts.map((post) => (
         <article key={post.id} className="news-card">
           <div className="news-card-art">

@@ -12,6 +12,7 @@ export function Photo({
   variant,
   eager = false,
   decorative = false,
+  sources,
   className = '',
 }: {
   src?: string | null;
@@ -21,12 +22,14 @@ export function Photo({
   eager?: boolean;
   /** Empty alt when an adjacent title already describes the image. */
   decorative?: boolean;
+  /** Art-directed, lighter files per viewport; `src` stays the fallback. */
+  sources?: { media?: string; srcSet: string; type?: string }[];
   className?: string;
 }) {
   const t = useTranslations('photos');
   const stock = !src && fallback ? photos[fallback] : null;
   if (!src && !stock) return <SeaArtwork variant={variant} />;
-  return (
+  const img = (
     <img
       src={src || stock!.src}
       alt={decorative ? '' : src ? alt : t(fallback!)}
@@ -37,6 +40,15 @@ export function Photo({
       fetchPriority={eager ? 'high' : undefined}
       decoding="async"
     />
+  );
+  if (!sources?.length) return img;
+  return (
+    <picture>
+      {sources.map((source) => (
+        <source key={source.srcSet} {...source} />
+      ))}
+      {img}
+    </picture>
   );
 }
 export function PhotoCredit({

@@ -7,6 +7,17 @@ export const TIME_ZONE = 'Asia/Beirut';
 export const YEAR = 2027;
 /** Home hero photograph, e.g. '/photos/hero.jpg' in public/. Null shows the illustration. */
 export const HERO_IMAGE: string | null = '/photos/hero.jpg';
+/** Lighter WebP cuts of HERO_IMAGE: a portrait crop for phones, the full frame elsewhere. Clear when replacing the photograph. */
+export const HERO_SOURCES = HERO_IMAGE
+  ? [
+      {
+        media: '(max-width: 767px)',
+        srcSet: '/photos/hero-tall.webp',
+        type: 'image/webp',
+      },
+      { srcSet: '/photos/hero-wide.webp', type: 'image/webp' },
+    ]
+  : undefined;
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.VERCEL_URL

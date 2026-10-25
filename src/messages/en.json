@@ -4,11 +4,9 @@
     "short": "MCCD Saida 2027",
     "tagline": "Mediterranean Capital of Culture & Dialogue",
     "crest": "Saida Municipality crest",
-    "sample": "Programme preview · Sample events and news",
     "sampleShort": "Sample programme",
     "email": "Official email to be confirmed",
     "photo": "Programme artwork · Photography to be confirmed",
-    "demo": "Front-end demonstration. Reservations and edits are saved on this browser only; no email is sent.",
     "photoCredit": "Photo: {author}, {license}"
   },
   "nav": {
@@ -164,7 +162,6 @@
     "april": "April 2027",
     "date": "Specific date",
     "allTypes": "All event types",
-    "allAudiences": "Everyone",
     "freeOnly": "Free entry only",
     "list": "List",
     "calendar": "Calendar",
@@ -350,12 +347,14 @@
     "designationText": "Saida, Lebanon, and Córdoba, Spain, share the designation for 2027. Their programmes create opportunities for cultural exchange, community participation and new connections.",
     "themeTitle": "Threads of the Sea",
     "themeText": "Saida’s programme connects the city’s maritime heritage and diverse cultural life with ideas for its future. Its three strands invite residents, artists, cultural organisations and visitors to shape a shared year.",
+    "partnersLabel": "PARTNERS AND HOSTS",
     "partners": "The people behind the programme",
-    "regional": "Regional coordinators",
+    "regionalOne": "Regional coordinator",
+    "regionalRole": "Coordinates the Mediterranean Capitals of Culture and Dialogue across the region.",
     "host": "Host city",
+    "hostRole": "Hosts the year’s programme across its venues, streets and shoreline.",
     "local": "Local delivery",
     "committee": "MCCD Saida 2027 organising committee — official name to be confirmed",
-    "roles": "Names, roles and logos require final confirmation by the Saida committee.",
     "cordobaText": "Across the Mediterranean, Córdoba brings another perspective to the same conversation. Both cities share a commitment to culture as a meeting place.",
     "creditsTitle": "Photography",
     "creditsText": "The photographs of Saida on this preview are by Wikimedia Commons contributors and are used under the licences listed. Approved programme photography will replace them before launch.",
@@ -544,12 +543,9 @@
     }
   },
   "calendar": {
-    "days": "Days",
-    "month": "Month",
-    "view": "Calendar view",
     "today": "Today",
-    "hasEvents": "has events",
-    "dayEvents": "{count, plural, =0 {No events on this day} one {{n} event on this day} other {{n} events on this day}}"
+    "legendEvents": "Days with events",
+    "legendSelected": "Selected day"
   },
   "photos": {
     "seashore": "The Sea Castle of Saida glowing in evening light across the water",
@@ -564,7 +560,8 @@
     "alley": "A vaulted stone alleyway in the old city of Saida",
     "castle2009": "The stone causeway leading to the Sea Castle",
     "castlePano": "The gate of the Sea Castle at the end of its causeway",
-    "palaceInterior": "The arched central hall of Debbaneh Palace"
+    "palaceInterior": "The arched central hall of Debbaneh Palace",
+    "cordoba": "The Roman bridge over the Guadalquivir, with the Mosque-Cathedral of Córdoba behind"
   },
   "footer": {
     "explore": "Explore",

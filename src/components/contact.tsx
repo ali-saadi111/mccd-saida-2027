@@ -143,7 +143,6 @@ export function Contact() {
                     />
                   )}
                 />
-                <p className="notice">{t('site.demo')}</p>
                 {failed && (
                   <p role="alert" className="error-text">
                     {t('common.error')}

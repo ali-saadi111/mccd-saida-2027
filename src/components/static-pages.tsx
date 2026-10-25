@@ -3,7 +3,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { MotionConfig } from 'motion/react';
 import { PageIntro, ButtonLink } from './ui';
 import { ScrollChapters } from './ui/scroll-chapters';
-import { Photo, PhotoCredit, SeaArtwork, ThreadMark } from './artwork';
+import { Photo, PhotoCredit, ThreadMark } from './artwork';
 import { photos, type PhotoKey } from '@/lib/photos';
 import { numberLabel } from '@/lib/dates';
 import { YEAR } from '@/lib/config';
@@ -109,7 +109,7 @@ export function About() {
             </div>
             <article className="city-card">
               <div className="city-media">
-                <SeaArtwork variant="arch" />
+                <Photo fallback="cordoba" decorative />
               </div>
               <p className="city-country">{t('home.spain')}</p>
               <h3>{t('home.cordoba')}</h3>
@@ -122,54 +122,64 @@ export function About() {
           aria-labelledby="partners-title"
         >
           <div className="about-section-head">
+            <p className="eyebrow">{t('about.partnersLabel')}</p>
             <h2 id="partners-title">{t('about.partners')}</h2>
           </div>
-          <div className="partner-bento">
-            <article className="partner-tile partner-tile-wide">
-              <p className="eyebrow">{t('about.regional')}</p>
-              <div className="partner-logos">
-                <div>
-                  <img
-                    src="/brand/ufm-logo.svg"
-                    width={232}
-                    height={54}
-                    alt=""
-                    className="partner-logo"
-                  />
-                  <h3>{t('home.ufm')}</h3>
-                </div>
-                <div>
-                  <img
-                    src="/brand/alf-logo.png"
-                    width={1024}
-                    height={370}
-                    alt=""
-                    className="partner-logo"
-                  />
-                  <h3>{t('home.alf')}</h3>
-                </div>
+          <ul className="partner-grid">
+            <li className="partner-card">
+              <div className="partner-stage">
+                <img
+                  src="/brand/ufm-logo.svg"
+                  width={232}
+                  height={54}
+                  alt=""
+                  className="partner-logo"
+                />
               </div>
-            </article>
-            <article className="partner-tile">
-              <p className="eyebrow">{t('about.host')}</p>
-              <img
-                src="/brand/saida-crest.png"
-                width={120}
-                height={120}
-                alt={t('site.crest')}
-                className="partner-crest"
-              />
+              <p className="partner-role">{t('about.regionalOne')}</p>
+              <h3>{t('home.ufm')}</h3>
+              <p className="muted">{t('about.regionalRole')}</p>
+            </li>
+            <li className="partner-card">
+              <div className="partner-stage">
+                <img
+                  src="/brand/alf-logo.png"
+                  width={1024}
+                  height={370}
+                  alt=""
+                  className="partner-logo"
+                />
+              </div>
+              <p className="partner-role">{t('about.regionalOne')}</p>
+              <h3>{t('home.alf')}</h3>
+              <p className="muted">{t('about.regionalRole')}</p>
+            </li>
+            <li className="partner-card">
+              <div className="partner-stage partner-stage-city" aria-hidden>
+                <span>{t('home.saida')}</span>
+                <small>{t('home.lebanon')}</small>
+              </div>
+              <p className="partner-role">{t('about.host')}</p>
               <h3>
                 {t('home.saida')}, {t('home.lebanon')}
               </h3>
-            </article>
-            <article className="partner-tile">
-              <p className="eyebrow">{t('about.local')}</p>
+              <p className="muted">{t('about.hostRole')}</p>
+            </li>
+            <li className="partner-card">
+              <div className="partner-stage">
+                <img
+                  src="/brand/saida-crest.png"
+                  width={120}
+                  height={120}
+                  alt={t('site.crest')}
+                  className="partner-crest"
+                />
+              </div>
+              <p className="partner-role">{t('about.local')}</p>
               <h3>{t('home.municipality')}</h3>
               <p className="muted">{t('about.committee')}</p>
-            </article>
-          </div>
-          <p className="notice">{t('about.roles')}</p>
+            </li>
+          </ul>
         </section>
 
         <section

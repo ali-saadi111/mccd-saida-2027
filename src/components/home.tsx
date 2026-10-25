@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { CaretDown } from '@phosphor-icons/react';
 import { AppLink, ButtonLink, Arrow } from './ui';
 import { Photo, PhotoCredit } from './artwork';
 import { EventCard } from './event-row';
@@ -10,8 +11,8 @@ import { usePublicData } from '@/lib/data/hooks';
 import { filterEvents, publishedNews } from '@/lib/data';
 import { venues } from '@/lib/data/mock';
 import { localised } from '@/lib/data/types';
-import { HERO_IMAGE, YEAR } from '@/lib/config';
-import { dateKey, numberLabel, timeLabel } from '@/lib/dates';
+import { HERO_IMAGE, HERO_SOURCES, YEAR } from '@/lib/config';
+import { dateKey, dateLabel, numberLabel, timeLabel } from '@/lib/dates';
 import type { PhotoKey } from '@/lib/photos';
 export function OrganiserCTA() {
   const t = useTranslations();
@@ -45,13 +46,28 @@ function PlanByDate() {
   const onDay = upcoming.filter((e) => dateKey(e.starts_at) === day);
   return (
     <section className="plan-band" aria-labelledby="plan-title">
-      <Photo fallback="castleSea" decorative className="plan-bg" />
+      <Photo src="/photos/plan-by-date.jpg" decorative className="plan-bg" />
       <div className="plan-inner container">
         <div className="plan-copy">
           <p className="eyebrow">{t('home.planLabel')}</p>
           <h2 id="plan-title">{t('home.planTitle')}</h2>
           <p className="plan-text">{t('home.planText')}</p>
-          <div aria-live="polite">
+          <div className="plan-results" aria-live="polite">
+            <p className="plan-day">
+              <strong>
+                {dateLabel(day, l, {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                })}
+              </strong>
+              <span>
+                {t('events.count', {
+                  count: onDay.length,
+                  n: numberLabel(onDay.length, l),
+                })}
+              </span>
+            </p>
             {onDay.length ? (
               <ul className="plan-list">
                 {onDay.map((e) => (
@@ -81,7 +97,10 @@ function PlanByDate() {
               <p className="plan-empty">{t('events.noEventsDay')}</p>
             )}
           </div>
-          <AppLink href={'/' + l + '/events'} className="text-link light">
+          <AppLink
+            href={'/' + l + '/events'}
+            className="text-link light plan-link"
+          >
             {t('home.calendar')}
             <Arrow />
           </AppLink>
@@ -92,17 +111,8 @@ function PlanByDate() {
           month={month}
           onMonthChange={setMonth}
           eventDates={dates}
-          footer={
-            <p className="text-sm text-white/75">
-              {t('calendar.dayEvents', {
-                count: onDay.length,
-                n: numberLabel(onDay.length, l),
-              })}
-            </p>
-          }
         />
       </div>
-      <PhotoCredit photo="castleSea" className="photo-credit on-image" />
     </section>
   );
 }
@@ -120,7 +130,13 @@ export function Home() {
   return (
     <>
       <section className="home-hero">
-        <Photo src={HERO_IMAGE} fallback="seashore" eager className="hero-bg" />
+        <Photo
+          src={HERO_IMAGE}
+          sources={HERO_SOURCES}
+          fallback="seashore"
+          eager
+          className="hero-bg"
+        />
         <div className="hero-shade" aria-hidden />
         <div className="hero-content container">
           <p className="eyebrow">{t('home.eyebrow')}</p>
@@ -137,13 +153,21 @@ export function Home() {
               {t('home.participate')}
             </ButtonLink>
           </div>
+          <a href="#highlights" className="hero-scroll">
+            <span>{t('home.scroll')}</span>
+            <CaretDown weight="regular" aria-hidden />
+          </a>
         </div>
         {!HERO_IMAGE && (
           <PhotoCredit photo="seashore" className="photo-credit on-image" />
         )}
       </section>
       <div className="container">
-        <section className="facts" aria-label={t('home.factsLabel')}>
+        <section
+          id="highlights"
+          className="facts"
+          aria-label={t('home.factsLabel')}
+        >
           {facts.map(([value, key, options]) => (
             <div key={key} className="fact">
               <strong>{numberLabel(value, l, options)}</strong>
@@ -173,7 +197,7 @@ export function Home() {
               <Arrow />
             </AppLink>
           </div>
-          <div className="event-cards">
+          <div className="event-cards rail">
             {filterEvents(events)
               .slice(0, 3)
               .map((event) => (
@@ -245,7 +269,7 @@ export function Home() {
               <Arrow />
             </AppLink>
           </div>
-          <NewsGrid posts={publishedNews(news).slice(0, 3)} />
+          <NewsGrid posts={publishedNews(news).slice(0, 3)} className="rail" />
         </section>
       </div>
       <OrganiserCTA />

@@ -1,5 +1,5 @@
 /**
- * Openly licensed photographs of Saida from Wikimedia Commons, self-hosted in
+ * Openly licensed photographs of Saida and Córdoba from Wikimedia Commons, self-hosted in
  * public/photos. They stand in until approved programme photography is supplied.
  * Alt text lives in the message files under `photos.<key>`.
  */
@@ -16,7 +16,8 @@ export type PhotoKey =
   | 'alley'
   | 'castle2009'
   | 'castlePano'
-  | 'palaceInterior';
+  | 'palaceInterior'
+  | 'cordoba';
 export type PhotoCredit = {
   src: string;
   width: number;
@@ -130,6 +131,16 @@ export const photos: Record<PhotoKey, PhotoCredit> = {
     author: 'Elias Ziade',
     license: 'CC BY-SA 4.0',
     source: commons + 'Debbane_Palace_Interior.jpg',
+  },
+  cordoba: {
+    src: '/photos/cordoba.jpg',
+    width: 1400,
+    height: 927,
+    author: 'Rodelar',
+    license: 'CC BY-SA 4.0',
+    source:
+      commons +
+      'Vista_del_puente_antiguo_y_de_la_mezquita-catedral_de_Córdoba.jpg',
   },
 };
 /** Venue photograph shown until an event supplies its own image. */
