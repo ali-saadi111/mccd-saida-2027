@@ -212,8 +212,10 @@ export const GlassCalendar = React.forwardRef<
       </button>
     );
 
-    // Monday-first grid: blanks before the 1st of the month.
+    // Monday-first grid: blanks before the 1st, then after the last day so
+    // every month fills six weeks and the calendar keeps one height.
     const leading = getISODay(startOfMonth(currentMonth)) - 1;
+    const trailing = 42 - leading - monthDays.length;
     const weekdayHeads = Array.from({ length: 7 }, (_, i) =>
       fmt.weekdayShort.format(new Date(2027, 1, 1 + i)),
     );
@@ -286,6 +288,13 @@ export const GlassCalendar = React.forwardRef<
               <React.Fragment key={day.date.getDate()}>
                 {dayButton(day)}
               </React.Fragment>
+            ))}
+            {Array.from({ length: trailing }, (_, i) => (
+              <span
+                key={'pad' + i}
+                aria-hidden
+                className="aspect-square w-full max-w-12"
+              />
             ))}
           </div>
         </div>

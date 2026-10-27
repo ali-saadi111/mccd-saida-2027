@@ -1,18 +1,15 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { CaretDown } from '@phosphor-icons/react';
-import { AppLink, ButtonLink, Arrow } from './ui';
+import { AppLink, ButtonLink } from './ui';
 import { Photo, PhotoCredit } from './artwork';
 import { EventCard } from './event-row';
 import { NewsGrid } from './news';
 import { DayCalendar } from './day-calendar';
 import { usePublicData } from '@/lib/data/hooks';
 import { filterEvents, publishedNews } from '@/lib/data';
-import { venues } from '@/lib/data/mock';
-import { localised } from '@/lib/data/types';
-import { HERO_IMAGE, HERO_SOURCES, YEAR } from '@/lib/config';
-import { dateKey, dateLabel, numberLabel, timeLabel } from '@/lib/dates';
+import { HERO_IMAGE, HERO_SOURCES, HERO_VIDEO, YEAR } from '@/lib/config';
+import { dateKey, dateLabel, numberLabel } from '@/lib/dates';
 import type { PhotoKey } from '@/lib/photos';
 export function OrganiserCTA() {
   const t = useTranslations();
@@ -28,134 +25,180 @@ export function OrganiserCTA() {
           <p>{t('home.ctaText')}</p>
           <ButtonLink href={'/' + l + '/submit'} variant="light">
             {t('nav.submit')}
-            <Arrow />
           </ButtonLink>
         </div>
       </div>
     </section>
   );
 }
-function PlanByDate() {
+/** The programme: upcoming event cards beside a calendar that narrows them to one day. */
+function ProgrammeSection() {
   const t = useTranslations();
   const l = useLocale();
   const { events } = usePublicData();
   const upcoming = filterEvents(events);
   const dates = upcoming.map((e) => dateKey(e.starts_at));
-  const [day, setDay] = useState(dates[0] || YEAR + '-03-06');
-  const [month, setMonth] = useState(day.slice(0, 7));
-  const onDay = upcoming.filter((e) => dateKey(e.starts_at) === day);
+  const [day, setDay] = useState('');
+  const [month, setMonth] = useState((dates[0] || YEAR + '-03-06').slice(0, 7));
+  const shown = day
+    ? upcoming.filter((e) => dateKey(e.starts_at) === day)
+    : upcoming.slice(0, 2);
   return (
-    <section className="plan-band" aria-labelledby="plan-title">
+    <section
+      className="plan-band programme-band"
+      aria-labelledby="programme-title"
+    >
       <Photo src="/photos/plan-by-date.jpg" decorative className="plan-bg" />
-      <div className="plan-inner container">
-        <div className="plan-copy">
-          <p className="eyebrow">{t('home.planLabel')}</p>
-          <h2 id="plan-title">{t('home.planTitle')}</h2>
-          <p className="plan-text">{t('home.planText')}</p>
-          <div className="plan-results" aria-live="polite">
-            <p className="plan-day">
-              <strong>
-                {dateLabel(day, l, {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                })}
-              </strong>
-              <span>
-                {t('events.count', {
-                  count: onDay.length,
-                  n: numberLabel(onDay.length, l),
-                })}
-              </span>
-            </p>
-            {onDay.length ? (
-              <ul className="plan-list">
-                {onDay.map((e) => (
-                  <li key={e.id}>
-                    <span className="plan-time">
-                      {timeLabel(e.starts_at, l)}
-                    </span>
-                    <span>
-                      <AppLink
-                        href={'/' + l + '/events/' + e.slug}
-                        className="plan-title"
-                      >
-                        {localised(e, 'title', l)}
-                      </AppLink>
-                      <small>
-                        {localised(
-                          venues.find((v) => v.id === e.venue_id)!,
-                          'name',
-                          l,
-                        )}
-                      </small>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="plan-empty">{t('events.noEventsDay')}</p>
-            )}
+      <div className="container">
+        <div className="section-heading swapped programme-heading">
+          <div>
+            <h2 id="programme-title">{t('home.upcoming')}</h2>
+            <p>{t('home.upcomingText')}</p>
           </div>
-          <AppLink
-            href={'/' + l + '/events'}
-            className="text-link light plan-link"
-          >
+          <AppLink href={'/' + l + '/events'} className="text-link light">
             {t('home.calendar')}
-            <Arrow />
           </AppLink>
         </div>
-        <DayCalendar
-          value={day}
-          onChange={setDay}
-          month={month}
-          onMonthChange={setMonth}
-          eventDates={dates}
-        />
+        <div className="plan-inner">
+          <div className="plan-copy">
+            <div className="plan-results" aria-live="polite">
+              <p className="plan-day">
+                <strong>
+                  {day
+                    ? dateLabel(day, l, {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long',
+                      })
+                    : t('home.comingUp')}
+                </strong>
+                {day && (
+                  <span>
+                    {t('events.count', {
+                      count: shown.length,
+                      n: numberLabel(shown.length, l),
+                    })}
+                    {' · '}
+                    <button
+                      type="button"
+                      className="plan-reset"
+                      onClick={() => setDay('')}
+                    >
+                      {t('home.showUpcoming')}
+                    </button>
+                  </span>
+                )}
+              </p>
+              {shown.length ? (
+                <div className="event-cards programme-cards rail">
+                  {shown.map((event) => (
+                    <EventCard key={event.id} event={event} />
+                  ))}
+                </div>
+              ) : (
+                <p className="plan-empty">{t('events.noEventsDay')}</p>
+              )}
+            </div>
+          </div>
+          <DayCalendar
+            value={day}
+            onChange={setDay}
+            month={month}
+            onMonthChange={setMonth}
+            eventDates={dates}
+          />
+        </div>
       </div>
     </section>
+  );
+}
+/** Highlighter-pen stroke that sweeps across its text once scrolled into view. */
+function Highlighter({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLElement>(null);
+  const [lit, setLit] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setLit(true);
+        observer.disconnect();
+      },
+      { rootMargin: '0px 0px -20% 0px' },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return (
+    <strong ref={ref} className="intro-highlight" data-lit={lit || undefined}>
+      {children}
+    </strong>
+  );
+}
+/** Decorative drone loop; stays on its poster frame for reduced motion or data saver. */
+function HeroVideo({ src, poster }: { src: string; poster: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const video = ref.current;
+    const still =
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      (navigator as Navigator & { connection?: { saveData?: boolean } })
+        .connection?.saveData;
+    if (video && !still) video.play().catch(() => {});
+  }, []);
+  return (
+    <video
+      ref={ref}
+      src={src}
+      poster={poster}
+      muted
+      loop
+      playsInline
+      preload="none"
+      aria-hidden
+      className="photo hero-bg"
+    />
   );
 }
 export function Home() {
   const t = useTranslations();
   const l = useLocale();
-  const { events, news } = usePublicData();
-  const facts: [number, string, Intl.NumberFormatOptions?][] = [
-    [YEAR, 'factYear', { useGrouping: false }],
-    [2, 'factCities'],
-    [3, 'factStrands'],
-    [12, 'factMonths'],
-  ];
+  const { news } = usePublicData();
   const strandPhotos: PhotoKey[] = ['castle2009', 'alley', 'palaceArch'];
   return (
     <>
       <section className="home-hero">
-        <Photo
-          src={HERO_IMAGE}
-          sources={HERO_SOURCES}
-          fallback="seashore"
-          eager
-          className="hero-bg"
-        />
+        {HERO_VIDEO ? (
+          <HeroVideo {...HERO_VIDEO} />
+        ) : (
+          <Photo
+            src={HERO_IMAGE}
+            sources={HERO_SOURCES}
+            fallback="seashore"
+            eager
+            className="hero-bg"
+          />
+        )}
         <div className="hero-shade" aria-hidden />
         <div className="hero-content container">
-          <p className="eyebrow">{t('home.eyebrow')}</p>
-          <h1>
-            {t('home.title1')} <em>{t('home.title2')}</em>
-          </h1>
-          <p className="hero-subtitle">{t('home.subtitle')}</p>
-          <div className="hero-actions">
-            <ButtonLink href={'/' + l + '/events'} variant="light">
-              {t('home.discover')}
-              <Arrow />
-            </ButtonLink>
-            <ButtonLink href={'/' + l + '/submit'} variant="outline-light">
-              {t('home.participate')}
-            </ButtonLink>
+          <div className="hero-main">
+            <p className="hero-subtitle">{t('home.subtitle')}</p>
+            <h1 className="hero-title">{t('home.programme')}</h1>
+            <div className="hero-actions">
+              <ButtonLink href={'/' + l + '/events'} variant="light">
+                {t('home.discover')}
+              </ButtonLink>
+              <ButtonLink href={'/' + l + '/submit'} variant="outline-light">
+                {t('home.participate')}
+              </ButtonLink>
+            </div>
+          </div>
+          <div className="hero-aside">
+            <p className="eyebrow">{t('home.eyebrow')}</p>
           </div>
           <a href="#highlights" className="hero-scroll">
             <span>{t('home.scroll')}</span>
-            <CaretDown weight="regular" aria-hidden />
           </a>
         </div>
         {!HERO_IMAGE && (
@@ -163,50 +206,19 @@ export function Home() {
         )}
       </section>
       <div className="container">
-        <section
-          id="highlights"
-          className="facts"
-          aria-label={t('home.factsLabel')}
-        >
-          {facts.map(([value, key, options]) => (
-            <div key={key} className="fact">
-              <strong>{numberLabel(value, l, options)}</strong>
-              <span>{t('home.' + key)}</span>
-            </div>
-          ))}
-        </section>
-        <section className="home-intro">
+        <section id="highlights" className="home-intro">
           <p className="eyebrow">{t('site.tagline')}</p>
           <div>
-            <p className="intro-statement">{t('home.intro')}</p>
-            <AppLink href={'/' + l + '/about'}>
-              {t('home.citiesLink')}
-              <Arrow />
-            </AppLink>
-          </div>
-        </section>
-        <section className="section">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">{t('home.upcomingLabel')}</p>
-              <h2>{t('home.upcoming')}</h2>
-              <p className="muted">{t('home.upcomingText')}</p>
-            </div>
-            <AppLink href={'/' + l + '/events'}>
-              {t('home.calendar')}
-              <Arrow />
-            </AppLink>
-          </div>
-          <div className="event-cards rail">
-            {filterEvents(events)
-              .slice(0, 3)
-              .map((event) => (
-                <EventCard key={event.id} event={event} />
-              ))}
+            <p className="intro-statement">
+              {t.rich('home.intro', {
+                hl: (chunks) => <Highlighter>{chunks}</Highlighter>,
+              })}
+            </p>
+            <AppLink href={'/' + l + '/about'}>{t('home.citiesLink')}</AppLink>
           </div>
         </section>
       </div>
-      <PlanByDate />
+      <ProgrammeSection />
       <section className="theme-section section">
         <div className="container">
           <div className="theme-top">
@@ -222,7 +234,6 @@ export function Home() {
                 <div className="strand-media">
                   <Photo fallback={strandPhotos[n - 1]} />
                 </div>
-                <span>{numberLabel(n, l, { minimumIntegerDigits: 2 })}</span>
                 <h3>{t('home.strand' + n)}</h3>
                 <p>{t('home.strand' + n + 'Text')}</p>
               </article>
@@ -252,22 +263,16 @@ export function Home() {
                 <dd>{t('home.spain')}</dd>
               </div>
             </dl>
-            <AppLink href={'/' + l + '/about'}>
-              {t('home.citiesLink')}
-              <Arrow />
-            </AppLink>
+            <AppLink href={'/' + l + '/about'}>{t('home.citiesLink')}</AppLink>
           </div>
         </section>
         <section className="section border-t border-line">
-          <div className="section-heading">
+          <div className="section-heading centered">
             <div>
               <p className="eyebrow">{t('home.newsLabel')}</p>
               <h2>{t('home.newsTitle')}</h2>
             </div>
-            <AppLink href={'/' + l + '/news'}>
-              {t('home.allNews')}
-              <Arrow />
-            </AppLink>
+            <AppLink href={'/' + l + '/news'}>{t('home.allNews')}</AppLink>
           </div>
           <NewsGrid posts={publishedNews(news).slice(0, 3)} className="rail" />
         </section>

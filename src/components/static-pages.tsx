@@ -11,12 +11,6 @@ import { OrganiserCTA } from './home';
 export function About() {
   const t = useTranslations();
   const l = useLocale();
-  const facts: [number, string, Intl.NumberFormatOptions?][] = [
-    [YEAR, 'factYear', { useGrouping: false }],
-    [2, 'factCities'],
-    [3, 'factStrands'],
-    [12, 'factMonths'],
-  ];
   const photoKeys = Object.keys(photos) as PhotoKey[];
   return (
     // Motion honours reduced motion itself, so server and client render the same markup.
@@ -35,14 +29,6 @@ export function About() {
             <PhotoCredit photo="castlePano" />
           </figcaption>
         </figure>
-        <dl className="about-facts" aria-label={t('home.factsLabel')}>
-          {facts.map(([value, key, options]) => (
-            <div key={key} className="about-fact">
-              <dt>{t('home.' + key)}</dt>
-              <dd>{numberLabel(value, l, options)}</dd>
-            </div>
-          ))}
-        </dl>
 
         <section className="section about-story" aria-labelledby="story-title">
           <div className="about-section-head">
@@ -122,62 +108,56 @@ export function About() {
           aria-labelledby="partners-title"
         >
           <div className="about-section-head">
-            <p className="eyebrow">{t('about.partnersLabel')}</p>
-            <h2 id="partners-title">{t('about.partners')}</h2>
+            <h2 id="partners-title" className="eyebrow">
+              {t('about.partnersLabel')}
+            </h2>
           </div>
-          <ul className="partner-grid">
-            <li className="partner-card">
-              <div className="partner-stage">
-                <img
-                  src="/brand/ufm-logo.svg"
-                  width={232}
-                  height={54}
-                  alt=""
-                  className="partner-logo"
-                />
-              </div>
-              <p className="partner-role">{t('about.regionalOne')}</p>
-              <h3>{t('home.ufm')}</h3>
-              <p className="muted">{t('about.regionalRole')}</p>
+          <ul className="partner-logos">
+            <li>
+              <img
+                src="/brand/ufm-logo.svg"
+                width={232}
+                height={54}
+                alt={t('home.ufm')}
+                className="partner-logo"
+              />
             </li>
-            <li className="partner-card">
-              <div className="partner-stage">
-                <img
-                  src="/brand/alf-logo.png"
-                  width={1024}
-                  height={370}
-                  alt=""
-                  className="partner-logo"
-                />
-              </div>
-              <p className="partner-role">{t('about.regionalOne')}</p>
-              <h3>{t('home.alf')}</h3>
-              <p className="muted">{t('about.regionalRole')}</p>
+            <li>
+              <img
+                src="/brand/alf-logo.png"
+                width={1024}
+                height={370}
+                alt={t('home.alf')}
+                className="partner-logo"
+              />
             </li>
-            <li className="partner-card">
-              <div className="partner-stage partner-stage-city" aria-hidden>
-                <span>{t('home.saida')}</span>
-                <small>{t('home.lebanon')}</small>
-              </div>
-              <p className="partner-role">{t('about.host')}</p>
-              <h3>
-                {t('home.saida')}, {t('home.lebanon')}
-              </h3>
-              <p className="muted">{t('about.hostRole')}</p>
-            </li>
-            <li className="partner-card">
-              <div className="partner-stage">
+            <li>
+              <a
+                href="https://diverseworld.co"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img
-                  src="/brand/saida-crest.png"
-                  width={120}
-                  height={120}
-                  alt={t('site.crest')}
-                  className="partner-crest"
+                  src="/brand/diverse-world.svg"
+                  width={1835}
+                  height={486}
+                  alt="Diverse World"
+                  className="partner-logo partner-logo-small"
                 />
-              </div>
-              <p className="partner-role">{t('about.local')}</p>
-              <h3>{t('home.municipality')}</h3>
-              <p className="muted">{t('about.committee')}</p>
+              </a>
+            </li>
+            <li>
+              <img
+                src="/brand/saida-crest.png"
+                width={120}
+                height={120}
+                alt={t('home.municipality')}
+                className="partner-crest"
+              />
+            </li>
+            <li className="partner-stage-city">
+              <span>{t('home.saida')}</span>
+              <small>{t('home.lebanon')}</small>
             </li>
           </ul>
         </section>

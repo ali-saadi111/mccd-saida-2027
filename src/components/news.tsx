@@ -4,14 +4,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Tabs, TabPanel } from 'react-aria-components';
 import { MotionConfig } from 'motion/react';
 import { Clock } from '@phosphor-icons/react';
-import {
-  AppLink,
-  Button,
-  ButtonLink,
-  PageIntro,
-  Arrow,
-  EmptyState,
-} from './ui';
+import { AppLink, Button, ButtonLink, PageIntro, EmptyState } from './ui';
 import { AnimatedTabList } from './ui/animated-tabs';
 import { HoverImageList } from './ui/hover-image-list';
 import { Photo, PhotoCredit } from './artwork';
@@ -60,7 +53,6 @@ export function NewsGrid({
           </h3>
           <AppLink href={'/' + l + '/news/' + post.slug}>
             {t('common.readMore')}
-            <Arrow />
           </AppLink>
         </article>
       ))}
@@ -164,7 +156,6 @@ export function NewsIndex() {
             <p>{t('news.bridgeText')}</p>
             <ButtonLink href={'/' + l + '/events'} variant="light">
               {t('common.viewAll')}
-              <Arrow />
             </ButtonLink>
           </div>
         </div>
@@ -238,7 +229,6 @@ function Stories({
             <time dateTime={lead.published_at || undefined}>{date(lead)}</time>
             <span className="lead-read" aria-hidden>
               {t('common.readMore')}
-              <Arrow />
             </span>
           </p>
         </div>
@@ -302,9 +292,6 @@ function Stories({
                     decorative
                   />
                 </div>
-                <span className="story-row-arrow" aria-hidden>
-                  <Arrow diagonal />
-                </span>
               </article>
             )}
           />

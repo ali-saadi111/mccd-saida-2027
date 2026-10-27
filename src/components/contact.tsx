@@ -11,11 +11,12 @@ import {
   Lightbulb,
   MapPin,
 } from '@phosphor-icons/react';
-import { Field, Button, ButtonLink, Arrow } from './ui';
+import { Field, Button, ButtonLink } from './ui';
 import { RadioCards } from './ui/radio-cards';
 import { Photo } from './artwork';
 import { contactSchema, type ContactInput } from '@/lib/schemas/submission';
 import { contactAction } from '@/lib/actions';
+import { CONTACT_EMAIL } from '@/lib/config';
 const topics = [
   ['proposals', Lightbulb],
   ['partnerships', Handshake],
@@ -151,7 +152,6 @@ export function Contact() {
                 <div className="contact-submit">
                   <Button type="submit" isPending={isSubmitting}>
                     {t(isSubmitting ? 'contact.sending' : 'contact.send')}
-                    <Arrow diagonal />
                   </Button>
                 </div>
               </div>
@@ -164,7 +164,9 @@ export function Contact() {
               <EnvelopeSimple weight="thin" />
             </span>
             <p className="eyebrow">{t('contact.emailTitle')}</p>
-            <h2 className="contact-tile-title">{t('site.email')}</h2>
+            <h2 className="contact-tile-title" dir="ltr">
+              <a href={'mailto:' + CONTACT_EMAIL}>{CONTACT_EMAIL}</a>
+            </h2>
             <p className="muted">{t('contact.emailText')}</p>
           </section>
           <section className="contact-tile contact-place">
@@ -186,7 +188,6 @@ export function Contact() {
               size="sm"
             >
               {t('nav.submit')}
-              <Arrow />
             </ButtonLink>
           </section>
         </aside>

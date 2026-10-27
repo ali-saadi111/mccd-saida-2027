@@ -1,7 +1,7 @@
 'use client';
 import { ViewTransition } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { AppLink, Button, Badge, Arrow, EmptyState } from './ui';
+import { AppLink, Button, Badge, EmptyState } from './ui';
 import { Photo, PhotoCredit } from './artwork';
 import { VenueMap } from './venue-map';
 import { EventRow } from './event-row';
@@ -83,7 +83,6 @@ export function EventDetail({
               }
             >
               {t('events.addCalendar')}
-              <Arrow />
             </Button>
           </div>
         </div>
@@ -140,7 +139,6 @@ export function EventDetail({
                     rel="noopener noreferrer"
                   >
                     {t('events.tickets')}
-                    <Arrow diagonal />
                   </AppLink>
                 )}
               </dd>

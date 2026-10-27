@@ -1,32 +1,32 @@
 import type { Metadata, Viewport } from 'next';
-import {
-  Manrope,
-  Cormorant_Garamond,
-  Noto_Sans_Arabic,
-} from 'next/font/google';
+import { DM_Sans, Tajawal, Urbanist } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { Providers } from '@/components/providers';
 import { Header, Footer } from '@/components/shell';
 import { SITE_URL } from '@/lib/config';
 import '../globals.css';
-const sans = Manrope({
+// Official saida.gov.lb typefaces: DM Sans (English), Tajawal (Arabic).
+const sans = DM_Sans({
   subsets: ['latin'],
-  variable: '--font-manrope',
+  style: ['normal', 'italic'],
+  variable: '--font-dm-sans',
   display: 'swap',
 });
-const serif = Cormorant_Garamond({
+// Headings and the hero title: Urbanist, variable weight from thin to bold.
+const heroTitle = Urbanist({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  variable: '--font-cormorant',
+  style: ['normal', 'italic'],
+  variable: '--font-urbanist',
   display: 'swap',
 });
-const arabic = Noto_Sans_Arabic({
+const arabic = Tajawal({
   subsets: ['arabic'],
+  weight: ['400', '500', '700'],
   variable: '--font-arabic',
   display: 'swap',
 });
-export const viewport: Viewport = { themeColor: '#f7f4ee' };
+export const viewport: Viewport = { themeColor: '#f3f3f3' };
 export function generateStaticParams() {
   return [{ locale: 'en' }, { locale: 'ar' }];
 }
@@ -62,7 +62,9 @@ export default async function LocaleLayout({
       data-scroll-behavior="smooth"
       lang={locale}
       dir={locale === 'ar' ? 'rtl' : 'ltr'}
-      className={sans.variable + ' ' + serif.variable + ' ' + arabic.variable}
+      className={
+        sans.variable + ' ' + heroTitle.variable + ' ' + arabic.variable
+      }
     >
       <body>
         <Providers locale={locale} messages={messages}>

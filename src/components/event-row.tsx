@@ -2,7 +2,7 @@
 import { ViewTransition } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { motion } from 'motion/react';
-import { AppLink, Badge, Arrow } from './ui';
+import { AppLink, Badge } from './ui';
 import { Photo } from './artwork';
 import { dateLabel, timeLabel } from '@/lib/dates';
 import { venues } from '@/lib/data/mock';
@@ -56,13 +56,6 @@ export function EventRow({ event }: { event: Event }) {
       <Badge tone={event.entry === 'free' ? 'sea' : 'neutral'}>
         {t('common.' + event.entry)}
       </Badge>
-      <AppLink
-        href={'/' + l + '/events/' + event.slug}
-        className="event-arrow"
-        aria-label={localised(event, 'title', l)}
-      >
-        <Arrow />
-      </AppLink>
     </motion.article>
   );
 }

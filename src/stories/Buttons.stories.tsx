@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { userEvent, within } from 'storybook/test';
-import { Button, ButtonLink, Arrow } from '@/components/ui';
+import { Button, ButtonLink } from '@/components/ui';
 import { useTranslations } from 'next-intl';
 const meta = {
   title: 'Primitives/Button',
@@ -19,12 +19,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 function LocalButton(props: React.ComponentProps<typeof Button>) {
   const t = useTranslations();
-  return (
-    <Button {...props}>
-      {t('nav.submit')}
-      <Arrow diagonal />
-    </Button>
-  );
+  return <Button {...props}>{t('nav.submit')}</Button>;
 }
 export const Default: Story = { render: () => <LocalButton /> };
 export const Hover: Story = {
@@ -53,12 +48,7 @@ export const Arabic: Story = {
 export const NavigationLink: Story = {
   render: function Example() {
     const t = useTranslations();
-    return (
-      <ButtonLink href="/en/events">
-        {t('nav.programme')}
-        <Arrow />
-      </ButtonLink>
-    );
+    return <ButtonLink href="/en/events">{t('nav.programme')}</ButtonLink>;
   },
   parameters: {
     docs: {

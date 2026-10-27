@@ -13,7 +13,6 @@ import {
   Field,
   CheckField,
   AppLink,
-  Arrow,
   ConfirmDialog,
 } from './ui';
 import { ProgrammeCalendar } from './calendar';
@@ -331,7 +330,6 @@ export function BookingForm() {
             <div className="success-actions">
               <ButtonLink href={'/' + l + '/events'}>
                 {t('events.back')}
-                <Arrow diagonal />
               </ButtonLink>
               <Button
                 variant="secondary"
@@ -717,12 +715,10 @@ export function BookingForm() {
             {step < last ? (
               <Button key="next" onPress={next}>
                 {t('booking.next')}
-                <Arrow />
               </Button>
             ) : (
               <Button key="submit" type="submit" isPending={busy}>
                 {t(busy ? 'booking.submitting' : 'booking.submit')}
-                <Arrow />
               </Button>
             )}
           </div>

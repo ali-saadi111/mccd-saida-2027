@@ -23,13 +23,7 @@ import {
   type LinkProps,
 } from 'react-aria-components';
 import { tv, type VariantProps } from 'tailwind-variants';
-import {
-  ArrowUpRight,
-  ArrowRight,
-  CaretDown,
-  Check,
-  X,
-} from '@phosphor-icons/react';
+import { CaretDown, Check, X } from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
 export const buttonStyles = tv({
   base: 'button',
@@ -86,13 +80,6 @@ export function ButtonLink({
         className: typeof className === 'string' ? className : '',
       })}
     />
-  );
-}
-export function Arrow({ diagonal = false }: { diagonal?: boolean }) {
-  return diagonal ? (
-    <ArrowUpRight weight="thin" className="arrow" aria-hidden />
-  ) : (
-    <ArrowRight weight="thin" className="arrow" aria-hidden />
   );
 }
 export const badgeStyles = tv({

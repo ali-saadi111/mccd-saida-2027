@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { MapPin } from '@phosphor-icons/react';
-import { AppLink, Arrow } from './ui';
+import { AppLink } from './ui';
 import { localised, type Venue } from '@/lib/data/types';
 import 'mapbox-gl/dist/mapbox-gl.css';
 export function VenueMap({ venue }: { venue: Venue }) {
@@ -74,7 +74,6 @@ export function VenueMap({ venue }: { venue: Venue }) {
         rel="noopener noreferrer"
       >
         {t('common.directions')}
-        <Arrow diagonal />
       </AppLink>
     </section>
   );

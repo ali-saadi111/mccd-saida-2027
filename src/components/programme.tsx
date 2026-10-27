@@ -26,7 +26,6 @@ import {
   EmptyState,
   Badge,
   AppLink,
-  Arrow,
 } from './ui';
 import { ChipGroup } from './ui/chip-group';
 import { ScrollSpy } from './ui/scroll-spy';
@@ -40,6 +39,7 @@ import { filterEvents } from '@/lib/data';
 import { venues } from '@/lib/data/mock';
 import { venuePhoto } from '@/lib/photos';
 import {
+  audiences,
   categories,
   localised,
   type Event,
@@ -97,6 +97,10 @@ export function Programme() {
     filters.category && {
       key: 'category',
       label: t('categories.' + filters.category),
+    },
+    filters.audience && {
+      key: 'audience',
+      label: t('audiences.' + filters.audience),
     },
     filters.date && { key: 'date', label: dateLabel(filters.date, l) },
     filters.freeOnly && { key: 'freeOnly', label: t('events.freeOnly') },
@@ -259,6 +263,18 @@ export function Programme() {
                 options={[
                   { id: '', label: t('events.allMonths') },
                   ...months.map((id) => ({ id, label: monthLabel(id) })),
+                ]}
+              />
+              <SelectField
+                label={t('common.audience')}
+                value={filters.audience || ''}
+                onChange={(v) => update('audience', v)}
+                options={[
+                  { id: '', label: t('events.allAudiences') },
+                  ...audiences.map((id) => ({
+                    id,
+                    label: t('audiences.' + id),
+                  })),
                 ]}
               />
               <DateFilter
@@ -508,9 +524,6 @@ function AgendaItem({ event }: { event: Event }) {
           <Badge tone={event.entry === 'free' ? 'sea' : 'neutral'}>
             {t('common.' + event.entry)}
           </Badge>
-          <span className="agenda-arrow" aria-hidden>
-            <Arrow />
-          </span>
         </div>
       </article>
     </motion.li>

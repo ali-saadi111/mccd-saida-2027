@@ -4,9 +4,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { List, X, GlobeHemisphereWest } from '@phosphor-icons/react';
 import { ModalOverlay, Modal, Dialog, Heading } from 'react-aria-components';
-import { AppLink, Button, ButtonLink, Arrow } from './ui';
-import { YEAR } from '@/lib/config';
-import { numberLabel } from '@/lib/dates';
+import { AppLink, Button, ButtonLink } from './ui';
+import { CONTACT_EMAIL } from '@/lib/config';
 export function Brand({ crest = true }: { crest?: boolean }) {
   const t = useTranslations();
   const l = useLocale();
@@ -40,6 +39,23 @@ export function LanguageSwitch({ className = 'language-switch' }) {
     >
       <GlobeHemisphereWest weight="regular" aria-hidden />
       {t('nav.language')}
+    </AppLink>
+  );
+}
+/** Standalone 3D crest beside the tagline; the wordmark stays for screen readers. */
+function CrestMark() {
+  const t = useTranslations();
+  const l = useLocale();
+  return (
+    <AppLink href={'/' + l} className="crest-mark">
+      <img
+        src="/brand/saida-crest-cutout.png"
+        alt={t('site.crest')}
+        width={469}
+        height={516}
+      />
+      <span className="crest-tagline">{t('site.tagline')}</span>
+      <span className="sr-only">{t('site.short')}</span>
     </AppLink>
   );
 }
@@ -84,14 +100,10 @@ export function Header() {
       <AppLink href="#main" className="skip-link">
         {t('nav.skip')}
       </AppLink>
-      <header
-        className="site-header"
-        data-scrolled={scrolled || undefined}
-        data-home={path === '/' + l || undefined}
-      >
+      <header className="site-header" data-scrolled={scrolled || undefined}>
         <div className="container">
           <div className="header-inner">
-            <Brand />
+            <CrestMark />
             <nav className="desktop-nav" aria-label={t('nav.menu')}>
               {nav}
             </nav>
@@ -103,7 +115,6 @@ export function Header() {
                 className="header-submit"
               >
                 {t('nav.submit')}
-                <Arrow />
               </ButtonLink>
               <Button
                 variant="outline"
@@ -146,7 +157,6 @@ export function Header() {
                 onPress={() => setOpen(false)}
               >
                 {t('nav.submit')}
-                <Arrow />
               </ButtonLink>
               <LanguageSwitch />
             </div>
@@ -239,16 +249,30 @@ export function Footer() {
           <div>
             <span>{t('home.copyright')}</span>
             <span>
-              {t('home.municipality')} · {t('site.email')}
+              {t('home.municipality')} ·{' '}
+              <a href={'mailto:' + CONTACT_EMAIL} dir="ltr">
+                {CONTACT_EMAIL}
+              </a>
             </span>
           </div>
-          <LanguageSwitch className="language-switch footer-language" />
+          <div className="footer-end">
+            <LanguageSwitch className="language-switch footer-language" />
+            <span className="footer-maker">
+              {t.rich('home.madeBy', {
+                link: (chunks) => (
+                  <a
+                    href="https://diverseworld.co"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    dir="ltr"
+                  >
+                    {chunks}
+                  </a>
+                ),
+              })}
+            </span>
+          </div>
         </div>
-      </div>
-      <div className="footer-wordmark container" aria-hidden>
-        <p>
-          {t('home.saida')} {numberLabel(YEAR, l, { useGrouping: false })}
-        </p>
       </div>
     </footer>
   );

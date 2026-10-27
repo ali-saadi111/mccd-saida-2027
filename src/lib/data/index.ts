@@ -21,7 +21,10 @@ export function filterEvents(events: Event[], filters: EventFilters = {}) {
         (!filters.month || dateKey(e.starts_at).startsWith(filters.month)) &&
         (!filters.date || dateKey(e.starts_at) === filters.date) &&
         (!filters.category || e.category === filters.category) &&
-        (!filters.audience || e.audience.includes(filters.audience as never)) &&
+        // Events open to everyone also match any specific audience.
+        (!filters.audience ||
+          e.audience.includes(filters.audience as never) ||
+          e.audience.includes('everyone')) &&
         (!filters.freeOnly || e.entry === 'free'),
     )
     .sort((a, b) => a.starts_at.localeCompare(b.starts_at));
