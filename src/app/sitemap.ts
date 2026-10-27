@@ -10,7 +10,6 @@ const STATIC_PATHS = [
   '/contact',
   '/submit',
   '/privacy',
-  '/accessibility',
 ];
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [events, news] = await Promise.all([getEvents(), getNews()]);

@@ -4,14 +4,12 @@ import { MotionConfig } from 'motion/react';
 import { PageIntro, ButtonLink } from './ui';
 import { ScrollChapters } from './ui/scroll-chapters';
 import { Photo, PhotoCredit, ThreadMark } from './artwork';
-import { photos, type PhotoKey } from '@/lib/photos';
 import { numberLabel } from '@/lib/dates';
 import { YEAR } from '@/lib/config';
 import { OrganiserCTA } from './home';
 export function About() {
   const t = useTranslations();
   const l = useLocale();
-  const photoKeys = Object.keys(photos) as PhotoKey[];
   return (
     // Motion honours reduced motion itself, so server and client render the same markup.
     <MotionConfig reducedMotion="user">
@@ -161,65 +159,25 @@ export function About() {
             </li>
           </ul>
         </section>
-
-        <section
-          className="section about-credits"
-          id="credits"
-          aria-labelledby="credits-title"
-        >
-          <div className="about-section-head about-credits-head">
-            <div>
-              <h2 id="credits-title">{t('about.creditsTitle')}</h2>
-              <p className="muted">{t('about.creditsText')}</p>
-            </div>
-            <span className="credits-count">
-              {t('about.creditsCount', {
-                count: photoKeys.length,
-                n: numberLabel(photoKeys.length, l),
-              })}
-            </span>
-          </div>
-          <ul className="credit-grid">
-            {photoKeys.map((key) => (
-              <li key={key} className="credit-item">
-                <div className="credit-thumb">
-                  <Photo fallback={key} decorative />
-                </div>
-                <div>
-                  <p>{t('photos.' + key)}</p>
-                  <PhotoCredit photo={key} />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
       </div>
       <OrganiserCTA />
     </MotionConfig>
   );
 }
-export function LegalPage({ kind }: { kind: 'privacy' | 'accessibility' }) {
+export function PrivacyPage() {
   const t = useTranslations();
   return (
     <div className="container">
       <article className="article">
         <PageIntro
-          eyebrow={t(
-            kind === 'privacy' ? 'legal.privacyIntro' : 'legal.accessIntro',
-          )}
-          title={t(
-            kind === 'privacy' ? 'legal.privacyTitle' : 'legal.accessTitle',
-          )}
+          eyebrow={t('legal.privacyIntro')}
+          title={t('legal.privacyTitle')}
         />
         <div className="prose">
           {[1, 2, 3, 4].map((n) => (
             <section key={n}>
-              {kind === 'privacy' && (
-                <h2>{t('legal.privacy' + n + 'Title')}</h2>
-              )}
-              <p>
-                {t('legal.' + (kind === 'privacy' ? 'privacy' : 'access') + n)}
-              </p>
+              <h2>{t('legal.privacy' + n + 'Title')}</h2>
+              <p>{t('legal.privacy' + n)}</p>
             </section>
           ))}
         </div>

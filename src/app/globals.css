@@ -4132,8 +4132,7 @@ button.journey-step:hover .journey-label {
   margin-top: calc(var(--spacing) * 5);
 }
 .about-cities,
-.about-partners,
-.about-credits {
+.about-partners {
   border-top: 1px solid var(--color-line);
 }
 
@@ -4401,63 +4400,6 @@ button.journey-step:hover .journey-label {
 }
 [dir='rtl'] .partner-stage-city small {
   letter-spacing: 0;
-}
-
-/* Photography credits */
-.about-credits-head {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: calc(var(--spacing) * 6);
-  max-width: none;
-}
-.about-credits-head > div {
-  max-width: var(--container-prose);
-}
-.about-credits-head p {
-  margin-top: calc(var(--spacing) * 4);
-}
-.credits-count {
-  flex-shrink: 0;
-  padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 3.5);
-  border-radius: var(--radius-pill);
-  background: var(--color-mist);
-  font-size: var(--text-label);
-  font-weight: 600;
-}
-.credit-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: calc(var(--spacing) * 12);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid var(--color-line);
-}
-.credit-item {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--spacing) * 4);
-  padding-block: calc(var(--spacing) * 4);
-  border-bottom: 1px solid var(--color-line);
-  font-size: 0.875rem;
-}
-.credit-thumb {
-  flex-shrink: 0;
-  width: calc(var(--spacing) * 18);
-  height: calc(var(--spacing) * 13.5);
-  overflow: hidden;
-  border-radius: calc(var(--radius-media) - 4px);
-  background: var(--color-mist);
-}
-.credit-thumb > * {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.credit-item .photo-credit {
-  display: inline-block;
-  margin-top: calc(var(--spacing) * 1);
 }
 
 /* ---------- Contact ---------- */
@@ -4781,13 +4723,6 @@ button.journey-step:hover .journey-label {
   .city-thread .thread-mark {
     width: calc(var(--spacing) * 16);
     height: calc(var(--spacing) * 10);
-  }
-  .about-credits-head {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .credit-grid {
-    grid-template-columns: minmax(0, 1fr);
   }
   .contact-card {
     padding: calc(var(--spacing) * 5);

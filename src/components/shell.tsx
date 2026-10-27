@@ -183,7 +183,6 @@ export function Footer() {
       t('footer.initiative'),
       [
         ['about', t('nav.about')],
-        ['about#credits', t('about.creditsTitle')],
         ['contact', t('nav.contact')],
       ],
     ],
@@ -191,7 +190,6 @@ export function Footer() {
       t('footer.website'),
       [
         ['privacy', t('nav.privacy')],
-        ['accessibility', t('nav.accessibility')],
         ['admin', t('nav.admin')],
       ],
     ],

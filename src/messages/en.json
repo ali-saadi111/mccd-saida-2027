@@ -20,7 +20,6 @@
     "close": "Close navigation",
     "skip": "Skip to content",
     "privacy": "Privacy",
-    "accessibility": "Accessibility",
     "admin": "Demo administration"
   },
   "common": {
@@ -342,12 +341,9 @@
     "themeText": "Saida’s programme connects the city’s maritime heritage and diverse cultural life with ideas for its future. Its three strands invite residents, artists, cultural organisations and visitors to shape a shared year.",
     "partnersLabel": "PARTNERS AND HOSTS",
     "cordobaText": "Across the Mediterranean, Córdoba brings another perspective to the same conversation. Both cities share a commitment to culture as a meeting place.",
-    "creditsTitle": "Photography",
-    "creditsText": "The photographs of Saida on this preview are by Wikimedia Commons contributors and are used under the licences listed. Approved programme photography will replace them before launch.",
     "storyLabel": "THE INITIATIVE",
     "storyTitle": "The story so far",
-    "citiesLabel": "TWO CITIES, ONE MEDITERRANEAN",
-    "creditsCount": "{count, plural, one {{n} photograph} other {{n} photographs}}"
+    "citiesLabel": "TWO CITIES, ONE MEDITERRANEAN"
   },
   "contact": {
     "eyebrow": "LET’S TALK",
@@ -435,13 +431,7 @@
     "privacy3Title": "Clear your data",
     "privacy3": "Use “Clear draft” in the submission form to remove an unfinished draft. Use “Reset demo data” in the demonstration admin area to remove local reservations and edits. Clearing this site’s browser storage removes all preview data.",
     "privacy4Title": "Before the public launch",
-    "privacy4": "The official data controller, contact address, retention period and procedure for access, correction or deletion requests must be confirmed and added here. The production service will require secure storage and restricted access for authorised programme staff.",
-    "accessTitle": "Culture should be open to everyone.",
-    "accessIntro": "Accessibility statement",
-    "access1": "This site is designed for keyboard navigation, screen readers, readable contrast and both left-to-right English and right-to-left Arabic. Motion follows your device’s reduced-motion preference.",
-    "access2": "Use the skip link to reach the main content. Calendars support arrow keys; Enter selects an available date. Booked dates and slots are labelled in text and cannot be selected. Forms identify errors beside the relevant fields.",
-    "access3": "Venue accessibility information is shown on each event page and must be confirmed by organisers before publication. Please contact the programme team once the official contact channel is available if you need information in another format.",
-    "access4": "The site targets WCAG 2.1 AA. A final independent accessibility audit is required before launch."
+    "privacy4": "The official data controller, contact address, retention period and procedure for access, correction or deletion requests must be confirmed and added here. The production service will require secure storage and restricted access for authorised programme staff."
   },
   "errors": {
     "notFoundLabel": "404 · A THREAD OUT OF PLACE",
